@@ -1,16 +1,21 @@
 # pharmacyonduty
 
-A new Flutter project.
+Flutter ile geliştirilmiş provider mimarisi kullanılarak state yönetimleri sağlanan bir mobil Nöbetçi Eczane uygulaması.
 
-## Getting Started
+## Kullanılan Teknolojiler
 
-This project is a starting point for a Flutter application.
+- flutter
+- provider
+- http
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<br/>
+<div class="row">
+<img src="assets/readme/0.png" height="350">
+<img src="assets/readme/1.png" height="350">
+<img src="assets/readme/2.png" height="350">
+</div>
+<div class="row">
+<img src="assets/readme/3.png" height="350">
+<img src="assets/readme/4.png" height="350">
+<img src="assets/readme/5.png" height="350">
+</div>

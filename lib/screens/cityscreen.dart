@@ -1,35 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:pharmacyonduty/helper/cities.dart';
 import 'package:pharmacyonduty/screens/pharmacyscreen.dart';
 import 'package:pharmacyonduty/welcomepage.dart';
+import 'package:provider/provider.dart';
+import 'package:pharmacyonduty/provider/city_provider.dart';
 
-class CityScreen extends StatefulWidget {
+class CityScreen extends StatelessWidget {
   const CityScreen({Key? key}) : super(key: key);
 
   @override
-  State<CityScreen> createState() => _CityScreenState();
-}
-
-class _CityScreenState extends State<CityScreen> {
-  final List<String> sehirler = Sehirler().sehirler;
-  List<String> filteredSehirler = [];
-
-  @override
-  void initState() {
-    super.initState();
-    filteredSehirler = sehirler;
-  }
-
-  void filterSehirler(String query) {
-    setState(() {
-      filteredSehirler = sehirler.where((sehir) {
-        return sehir.toLowerCase().contains(query.toLowerCase());
-      }).toList();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    var cityProvider = Provider.of<CityProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.indigo,
@@ -43,7 +24,7 @@ class _CityScreenState extends State<CityScreen> {
             color: Colors.white,
           ),
           onPressed: () {
-            Navigator.pushReplacement(
+            Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => WelcomePage()),
             );
@@ -56,13 +37,14 @@ class _CityScreenState extends State<CityScreen> {
               color: Colors.white,
             ),
             onPressed: () async {
-              final String? selected = await showSearch(
+              final selected = await showSearch(
                 context: context,
-                delegate: SehirlerSearchDelegate(sehirler),
+                delegate: SehirlerSearchDelegate(cityProvider.cities),
               );
               if (selected != null && selected.isNotEmpty) {
+                cityProvider.selectCity(selected);
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PharmacyScreen(sehir: selected),
+                  builder: (context) => PharmacyScreen(),
                 ));
               }
             },
@@ -70,18 +52,29 @@ class _CityScreenState extends State<CityScreen> {
         ],
       ),
       body: ListView.builder(
-        itemCount: filteredSehirler.length,
+        itemCount: cityProvider.cities.length,
         itemBuilder: (context, index) {
-          String sehir = filteredSehirler[index];
-          return Card(
-            child: ListTile(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PharmacyScreen(sehir: sehir),
-                ));
-              },
-              title: Text(sehir),
+          final sehir = cityProvider.cities[index];
+          return ListTile(
+            leading: Text(
+              sehir,
+              style: TextStyle(fontSize: 16),
             ),
+            trailing: Padding(
+              padding: const EdgeInsets.all(2),
+              child: Image.asset(
+                'assets/${sehir.toLowerCase()}.jpg', // Örneğin, Ankara için 'ankara.jpg'
+                width: 150,
+                height: 400,
+                fit: BoxFit.fill,
+              ),
+            ),
+            onTap: () {
+              cityProvider.selectCity(sehir);
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => PharmacyScreen(),
+              ));
+            },
           );
         },
       ),

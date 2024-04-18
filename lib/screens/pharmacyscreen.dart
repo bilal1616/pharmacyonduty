@@ -1,31 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:pharmacyonduty/models/pharmacymodel.dart';
+import 'package:provider/provider.dart';
+import 'package:pharmacyonduty/provider/city_provider.dart';
 import 'package:pharmacyonduty/service/pharmacyservice.dart';
 
-class PharmacyScreen extends StatefulWidget {
-  final String? sehir;
-  const PharmacyScreen({Key? key, required this.sehir}) : super(key: key);
-
-  @override
-  State<PharmacyScreen> createState() => _PharmacyScreenState();
-}
-
-class _PharmacyScreenState extends State<PharmacyScreen> {
-  List<Model> eczaneList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    getData();
-  }
-
-  getData() async {
-    eczaneList = await EczaneServis().fetchData(widget.sehir!);
-    setState(() {});
-  }
+class PharmacyScreen extends StatelessWidget {
+  const PharmacyScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var cityProvider = Provider.of<CityProvider>(context);
+    final selectedCity = cityProvider.selectedCity;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.indigo,
@@ -36,30 +22,38 @@ class _PharmacyScreenState extends State<PharmacyScreen> {
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.white, // Arrow icon'unu beyaz yap
+            color: Colors.white,
           ),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
       ),
-      body: eczaneList.isEmpty
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : ListView.builder(
-              itemCount: eczaneList.length,
+      body: FutureBuilder(
+        future: EczaneServis().fetchData(selectedCity!),
+        builder: (context, AsyncSnapshot<List<Model>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No pharmacy data available'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                Model sehir = eczaneList[index];
-                return myCard(sehir);
-              }),
+                final pharmacy = snapshot.data![index];
+                return Card(
+                  child: ListTile(
+                    title: Text(pharmacy.name ?? ''),
+                    subtitle: Text(pharmacy.address ?? ''),
+                  ),
+                );
+              },
+            );
+          }
+        },
+      ),
     );
-  }
-
-  Card myCard(Model sehir) {
-    return Card(
-        child: ListTile(
-            title: Text(sehir.name ?? ""),
-            subtitle: Text(sehir.address ?? "")));
   }
 }

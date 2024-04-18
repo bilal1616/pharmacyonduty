@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:pharmacyonduty/welcomepage.dart';
+import 'package:provider/provider.dart';
+import 'package:pharmacyonduty/provider/city_provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: WelcomePage(),
+    return ChangeNotifierProvider(
+      create: (context) => CityProvider(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: WelcomePage(),
+      ),
     );
   }
 }

@@ -1,5 +1,8 @@
-class Sehirler {
-  final List<String> sehirler = [
+import 'package:flutter/material.dart';
+
+class CityProvider extends ChangeNotifier {
+  String? selectedCity;
+  List<String> cities = [
     "Adana",
     "Adıyaman",
     "Afyonkarahisar",
@@ -24,7 +27,7 @@ class Sehirler {
     "Edirne",
     "Elazığ",
     "Erzincan",
-    "Erzurum ",
+    "Erzurum",
     "Eskişehir",
     "Gaziantep",
     "Giresun",
@@ -42,7 +45,7 @@ class Sehirler {
     "Kırşehir",
     "Kocaeli",
     "Konya",
-    "Kütahya ",
+    "Kütahya",
     "Malatya",
     "Manisa",
     "Kahramanmaraş",
@@ -60,7 +63,7 @@ class Sehirler {
     "Sivas",
     "Tekirdağ",
     "Tokat",
-    "Trabzon  ",
+    "Trabzon",
     "Tunceli",
     "Şanlıurfa",
     "Uşak",
@@ -68,7 +71,7 @@ class Sehirler {
     "Yozgat",
     "Zonguldak",
     "Aksaray",
-    "Bayburt ",
+    "Bayburt",
     "Karaman",
     "Kırıkkale",
     "Batman",
@@ -77,9 +80,14 @@ class Sehirler {
     "Ardahan",
     "Iğdır",
     "Yalova",
-    "Karabük ",
+    "Karabük",
     "Kilis",
-    "Osmaniye ",
+    "Osmaniye",
     "Düzce"
   ];
+
+  void selectCity(String city) {
+    selectedCity = city;
+    notifyListeners();
+  }
 }
